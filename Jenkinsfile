@@ -2,39 +2,48 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven_3.9.6'   // Ensure Maven is configured in Jenkins
-        jdk 'Java_21'     // Ensure JDK is configured in Jenkins
+        maven 'Maven_3.9.11'   // must match the name in Global Tool Config
+        jdk 'Java_21'         // must match the name in Global Tool Config
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/deepaksunder/spring-security.git'
+                git url: 'https://github.com/deepaksunder/spring-security.git', branch: 'master'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                dir('spring-security') {
+                    sh 'mvn clean compile'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                dir('spring-security') {
+                    sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit 'spring-security/target/surefire-reports/*.xml'
+                }
             }
         }
 
         stage('Package') {
             steps {
-                sh 'mvn package'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                dir('spring-security') {
+                    sh 'mvn package'
+                }
             }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'java -jar target/your-app.jar'
+            post {
+                success {
+                    archiveArtifacts artifacts: 'spring-security/target/*.jar', fingerprint: true
+                }
             }
         }
     }
