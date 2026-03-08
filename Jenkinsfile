@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'   // Ensure Maven is configured in Jenkins
-        jdk 'Java21'     // Ensure JDK is configured in Jenkins
+        maven 'Maven_3.9.6'   // Ensure Maven is configured in Jenkins
+        jdk 'Java_21'     // Ensure JDK is configured in Jenkins
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo/springboot-app.git'
+                git branch: 'main', url: 'https://github.com/deepaksunder/spring-security.git'
             }
         }
 
